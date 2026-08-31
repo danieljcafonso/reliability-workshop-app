@@ -1,0 +1,23 @@
+{
+  "name": "reliability-workshop-app",
+  "version": "1.0.0",
+  "description": "Reliability workshop demo app — OpenTelemetry traces/metrics, chaos injection, Postgres pool exhaustion",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node --import ./instrumentation.js app.js",
+    "load": "node scripts/load.js"
+  },
+  "dependencies": {
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.52.1",
+    "@opentelemetry/exporter-metrics-otlp-http": "^0.55.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.55.0",
+    "@opentelemetry/resources": "^1.28.0",
+    "@opentelemetry/sdk-metrics": "^1.28.0",
+    "@opentelemetry/sdk-node": "^0.55.0",
+    "@opentelemetry/semantic-conventions": "^1.28.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1"
+  }
+}

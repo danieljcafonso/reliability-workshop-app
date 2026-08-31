@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(sed -i '' '/OTEL_EXPORTER_OTLP_ENDPOINT/d; /OTEL_EXPORTER_OTLP_HEADERS/d; /OTEL_EXPORTER_OTLP_PROTOCOL/d' .env)",
+      "Bash(timeout 8 npm start)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/health)",
+      "Bash(curl -s http://localhost:3000/orders)",
+      "Bash(curl -s http://localhost:3000/admin/chaos)",
+      "Bash(cat /tmp_start_log)",
+      "Bash(node -e \"console.log\\(require\\('@opentelemetry/resources/package.json'\\).version\\); console.log\\(Object.keys\\(require\\('@opentelemetry/resources'\\)\\)\\)\")",
+      "Bash(echo \"grep exit: $?\")",
+      "Bash(npm uninstall *)",
+      "Bash(time curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/orders/slow-report)",
+      "Bash(curl -s -X POST http://localhost:3000/admin/chaos -H 'Content-Type: application/json' -d '{}')",
+      "Bash(echo \"--- normal traffic, 10 sequential requests post-reset, should all be fast 200s ---\")",
+      "Bash(pkill -f \"node --require ./instrumentation.js app.js\")",
+      "Bash(grep -rn \"^import .* from '\\\\.\\\\{1,2\\\\}/\" --include=\"*.js\" .)",
+      "Bash(curl -s http://localhost:3000/orders/slow-report)",
+      "Bash(pkill -f \"node --import ./instrumentation.js app.js\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} \" http://localhost:3000/orders)",
+      "Bash(echo \"exit: $?\")"
+    ]
+  }
+}
