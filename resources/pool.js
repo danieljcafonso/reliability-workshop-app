@@ -28,6 +28,7 @@ function acquire() {
       const idx = queue.indexOf(entry);
       if (idx !== -1) queue.splice(idx, 1);
       waiting--;
+      console.log(`[resource-pool] acquire timed out after ${TIMEOUT_MS}ms (active=${active}, waiting=${waiting})`);
       reject(new Error('resource pool acquire timed out'));
     }, TIMEOUT_MS);
 
