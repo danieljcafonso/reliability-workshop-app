@@ -14,7 +14,7 @@ import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 // single most common failure mode with this setup.
 diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.INFO);
 
-const serviceName = process.env.OTEL_SERVICE_NAME || `reliability-workshop-${process.env.ATTENDEE_ID || 'unknown'}`;
+const serviceName = process.env.OTEL_SERVICE_NAME || `my-app`;
 
 const resource = new Resource({
   [ATTR_SERVICE_NAME]: serviceName,
