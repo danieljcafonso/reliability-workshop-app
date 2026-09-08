@@ -6,7 +6,7 @@ The app already does the following, fully working, chaos and all:
 
 1. Serves business-logic routes (`routes/orders.js`, `routes/health.js`)
 2. Injects controllable faults — latency, error rate, resource-pool exhaustion (`routes/admin.js`, `chaos/chaosState.js`, `telemetry/chaosMiddleware.js`)
-3. Simulates a connection pool with a real exhaustion/timeout curve (`resources/pool.js`)
+3. Simulates a bounded resource pool (e.g. a DB connection pool) — a fixed number of slots (`RESOURCE_POOL_MAX`, default 5) that requests must acquire before doing work. When all slots are busy, new requests queue and time out after `RESOURCE_POOL_TIMEOUT_MS` if none frees up. The chaos `exhaustPool` flag simulates a leak: a request holds its slot forever, so slots fill up and later requests queue, then time out with `503`s (`resources/pool.js`, `resources/exhaust.js`)
 
 What it does **not** do yet, on this branch: report anything to Grafana Cloud. That's the exercise.
 
@@ -86,6 +86,20 @@ sdk.start();
 ## Exercise 2 — Custom RED metrics
 
 Auto-instrumentation alone gives you HTTP spans and some built-in metrics, but the exact metric names and labels an SLO needs shouldn't depend on which version of an instrumentation library happens to be installed. This exercise builds that guarantee by hand.
+
+### What are RED metrics?
+
+RED is the minimal set of signals needed to tell if a service is healthy:
+
+- **Rate** — requests per second (`http_requests_total`)
+- **Errors** — failed requests per second (`http_requests_total` filtered to error `status_code` values)
+- **Duration** — how long requests take (`http_request_duration_seconds`)
+
+### Instrument types
+
+- **Counter**: a value that only goes up — total requests, total errors
+- **Histogram**: buckets samples into ranges — request duration, payload size
+- **ObservableGauge**: a value read on demand that can go up or down — pool active/idle/waiting connections
 
 ### Part 1 — define the instruments
 
